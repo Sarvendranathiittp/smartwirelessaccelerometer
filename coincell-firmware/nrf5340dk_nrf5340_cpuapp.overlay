@@ -1,0 +1,99 @@
+/* nRF5340 High-Precision Power-Optimized Overlay */
+#include <zephyr/dt-bindings/regulator/nrf5x.h>
+#include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
+
+/* 1. Clock Management (Allowing Auto-Off) */
+&lfxo {
+    status = "okay";
+};
+
+/* HFXO must NOT be status 'okay' at system level to allow power gating */
+&hfxo {
+    status = "disabled"; 
+};
+
+/* Enable RTC0 for ultra-low-power LFCLK-based sampling */
+&rtc0 {
+    status = "okay";
+};
+
+/* 2. DCDC Power Rails (The Noble Dictionary Fix) */
+&vregmain {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&vregradio {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&vregh {
+    status = "okay";
+};
+
+/* Disable I2C1 since MPU6050 and LIS3DH are removed */
+&i2c1 {
+    status = "disabled";
+};
+
+/* ── Pin-control configuration for SPI3 ─────────────────────────────────── */
+&pinctrl {
+    spi3_default_h3lis: spi3_default_h3lis {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK,  1, 15)>,
+                    <NRF_PSEL(SPIM_MOSI, 1, 14)>,
+                    <NRF_PSEL(SPIM_MISO, 1, 13)>;
+        };
+    };
+
+    spi3_sleep_h3lis: spi3_sleep_h3lis {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK,  1, 15)>,
+                    <NRF_PSEL(SPIM_MOSI, 1, 14)>,
+                    <NRF_PSEL(SPIM_MISO, 1, 13)>;
+            low-power-enable;
+        };
+    };
+};
+
+/* ── SPI3 (SPIM3) controller ─────────────────────────────────────────────── */
+&spi3 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+
+    pinctrl-0 = <&spi3_default_h3lis>;
+    pinctrl-1 = <&spi3_sleep_h3lis>;
+    pinctrl-names = "default", "sleep";
+
+    cs-gpios = <&gpio1 12 GPIO_ACTIVE_LOW>,
+               <&gpio1 11 GPIO_ACTIVE_LOW>;
+    zephyr,pm-device-runtime-auto;
+
+    h3lis331dl: h3lis331dl@0 {
+        compatible = "vnd,spi-device";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+    };
+
+    adxl345: adxl345@1 {
+        compatible = "vnd,spi-device";
+        reg = <1>;
+        spi-max-frequency = <1000000>;
+    };
+};
+
+/* 4. Total Peripheral Lockdown */
+&uart0 {
+    status = "disabled";
+};
+
+&uart1 {
+    status = "disabled";
+};
+
+/* Disable other unused peripherals that might draw leakage */
+&spi0 { status = "disabled"; };
+&spi1 { status = "disabled"; };
+&spi2 { status = "disabled"; };
+&spi4 { status = "disabled"; };
+&pwm0 { status = "disabled"; };
+&adc { status = "okay"; };

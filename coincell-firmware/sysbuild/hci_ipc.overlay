@@ -1,0 +1,4 @@
+/* nRF5340 Network Core Lockdown */
+&uart0 {
+    status = "disabled";
+};

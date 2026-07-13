@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ISRO SMAL - Device Connection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "inverse-surface": "#2d3133",
+                        "border-slate": "#CBD5E1",
+                        "on-background": "#191c1e",
+                        "tertiary-fixed": "#ffdbcd",
+                        "primary": "#004ac6",
+                        "on-tertiary-container": "#ffede6",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eceef0",
+                        "primary-container": "#2563eb",
+                        "secondary-container": "#d5e3fc",
+                        "background": "#f7f9fb",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface": "#f7f9fb",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "outline-variant": "#c3c6d7",
+                        "chart-bg": "#1E293B",
+                        "outline": "#737686",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-container": "#eeefff",
+                        "tertiary-container": "#bc4800",
+                        "surface-dim": "#d8dadc",
+                        "axis-x": "#F97316",
+                        "inverse-primary": "#b4c5ff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "surface-tint": "#0053db",
+                        "on-error": "#ffffff",
+                        "secondary": "#515f74",
+                        "on-surface-variant": "#434655",
+                        "danger": "#DC2626",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-primary-fixed": "#00174b",
+                        "axis-y": "#22C55E",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "tertiary": "#943700",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-white": "#FFFFFF",
+                        "success": "#16A34A",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#d5e3fc",
+                        "on-tertiary-fixed": "#360f00",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-secondary-container": "#57657a",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "primary-fixed": "#dbe1ff",
+                        "axis-z": "#3B82F6",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#3a485b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "header-height": "64px",
+                        "control-height": "34px",
+                        "base": "4px",
+                        "touch-target": "44px",
+                        "stack-gap": "12px",
+                        "card-padding": "16px 20px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "stepper-input": ["JetBrains Mono"],
+                        "numeric-sm": ["JetBrains Mono"],
+                        "numeric-display": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "micro-data": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "card-title": ["Inter"],
+                        "button-label": ["Inter"],
+                        "numeric-md": ["JetBrains Mono"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "stepper-input": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                        "numeric-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "numeric-display": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                        "body-md": ["14px", {"lineHeight": "21px", "fontWeight": "400"}],
+                        "micro-data": ["10px", {"lineHeight": "12px", "fontWeight": "600"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "card-title": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "button-label": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "numeric-md": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .chassis-bg {
+            background-color: #f8fafc; /* Slate 50 */
+        }
+        .hardware-inset {
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--theme-colors-border-slate, #CBD5E1);
+        }
+        .gloss-modal {
+            backdrop-filter: blur(8px);
+            background-color: rgba(30, 41, 59, 0.6); /* Slate 800 at 60% */
+        }
+        /* Spinner animation for connecting state */
+        .spinner {
+            animation: spin 1.5s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="chassis-bg text-on-surface h-screen overflow-hidden flex flex-col font-body-md">
+<!-- TopAppBar (Suppressed per "Linear/Transactional" rule - this is a connection/setup screen before entering main flow) -->
+<!-- Navigation Drawer (Suppressed) -->
+<!-- Main Chassis Canvas -->
+<main class="flex-1 w-full flex flex-col md:flex-row h-full">
+<!-- Left Side: Search for Devices -->
+<section class="flex-1 p-gutter flex flex-col border-r border-border-slate bg-surface">
+<header class="mb-stack-gap flex items-center justify-between">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Device Discovery</h1>
+<p class="font-micro-data text-micro-data text-secondary mt-1">SCANNING BLE CHANNELS 37-39</p>
+</div>
+<button aria-label="Refresh Scan" class="flex items-center justify-center w-touch-target h-touch-target rounded-full bg-primary text-on-primary hardware-inset hover:opacity-90 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">refresh</span>
+</button>
+</header>
+<div class="flex-1 overflow-y-auto space-y-stack-gap pr-2">
+<!-- Discovered Device Card 1 -->
+<button class="w-full text-left bg-surface-white hardware-inset rounded-lg p-card-padding flex items-center justify-between hover:bg-surface-container-low transition-colors group" onclick="showConnectingModal('ISRO-SMAL-04X')">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">router</span>
+</div>
+<div>
+<h2 class="font-card-title text-card-title text-on-surface">ISRO-SMAL-04X</h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-2 h-2 rounded-full bg-axis-y"></span>
+<span class="font-micro-data text-micro-data text-secondary">RSSI: -64 dBm</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<!-- Discovered Device Card 2 -->
+<button class="w-full text-left bg-surface-white hardware-inset rounded-lg p-card-padding flex items-center justify-between hover:bg-surface-container-low transition-colors group" onclick="showConnectingModal('ISRO-SMAL-09Y')">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">router</span>
+</div>
+<div>
+<h2 class="font-card-title text-card-title text-on-surface">ISRO-SMAL-09Y</h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-2 h-2 rounded-full bg-axis-x"></span>
+<span class="font-micro-data text-micro-data text-secondary">RSSI: -78 dBm</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<!-- Radar Scan Animation Placeholder -->
+<div class="w-full h-32 flex items-center justify-center opacity-50 mt-8">
+<div class="relative w-16 h-16 rounded-full border-2 border-primary-fixed border-dashed animate-[spin_4s_linear_infinite] flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-fixed absolute">radar</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Side: My Devices -->
+<section class="flex-1 p-gutter flex flex-col bg-surface-container-lowest">
+<header class="mb-stack-gap">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Connected Hardware</h1>
+<p class="font-micro-data text-micro-data text-secondary mt-1">AUTHORIZED LAB INSTRUMENTS</p>
+</header>
+<div class="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-stack-gap content-start">
+<!-- Connected Device Card 1 -->
+<a class="block bg-surface-white hardware-inset rounded-lg p-card-padding hover:shadow-md transition-shadow relative overflow-hidden group" href="#">
+<div class="absolute top-0 left-0 w-1 h-full bg-axis-z"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">developer_board</span>
+</div>
+<span class="px-2 py-1 bg-surface-container-high rounded text-micro-data font-micro-data text-success flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> ACTIVE
+                        </span>
+</div>
+<h3 class="font-card-title text-card-title text-on-surface">LAB-NODE-Z1</h3>
+<p class="font-micro-data text-micro-data text-secondary mb-2 mt-1">CALIBRATION: OK</p>
+<div class="flex items-center gap-2 bg-chart-bg p-2 rounded">
+<span class="font-numeric-sm text-numeric-sm text-axis-z">Z-AXIS</span>
+<span class="font-micro-data text-micro-data text-surface-white opacity-70 ml-auto">1000 Hz</span>
+</div>
+</a>
+<!-- Connected Device Card 2 -->
+<a class="block bg-surface-white hardware-inset rounded-lg p-card-padding hover:shadow-md transition-shadow relative overflow-hidden group" href="#">
+<div class="absolute top-0 left-0 w-1 h-full bg-outline-variant"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">developer_board</span>
+</div>
+<span class="px-2 py-1 bg-surface-container-high rounded text-micro-data font-micro-data text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> IDLE
+                        </span>
+</div>
+<h3 class="font-card-title text-card-title text-on-surface text-opacity-60">TEST-RIG-02</h3>
+<p class="font-micro-data text-micro-data text-secondary mb-2 mt-1">LAST SEEN: 2H AGO</p>
+<div class="flex items-center gap-2 bg-surface-container-highest p-2 rounded">
+<span class="font-numeric-sm text-numeric-sm text-secondary">Y-AXIS</span>
+<span class="font-micro-data text-micro-data text-secondary ml-auto">OFFLINE</span>
+</div>
+</a>
+</div>
+<!-- Bottom Footer Actions (Simulated Chassis Panel) -->
+<div class="mt-auto pt-stack-gap border-t border-border-slate flex justify-between items-center">
+<button class="h-control-height px-4 bg-surface-white hardware-inset rounded text-button-label font-button-label text-on-surface hover:bg-surface-container-low transition-colors">
+                     MANUAL PAIRING
+                 </button>
+</div>
+</section>
+</main>
+<!-- Connecting Modal Overlay (Hidden by default) -->
+<div class="fixed inset-0 z-50 hidden items-center justify-center gloss-modal opacity-0 transition-opacity duration-300" id="connectingModal">
+<div class="bg-surface-white hardware-inset rounded-xl p-6 w-[320px] max-w-[90vw] flex flex-col items-center shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
+<!-- Smart Buffer / Data Transfer Icon -->
+<div class="relative w-16 h-16 mb-6">
+<svg class="w-full h-full text-surface-container-highest" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle>
+</svg>
+<svg class="w-full h-full text-primary absolute top-0 left-0 spinner" style="stroke-dasharray: 200; stroke-dashoffset: 50; stroke-linecap: round;" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bluetooth_connected</span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface text-center mb-1">Authenticating</h2>
+<p class="font-micro-data text-micro-data text-secondary text-center mb-6" id="connectingDeviceName">TARGET: UNKNOWN</p>
+<div class="w-full bg-surface-container rounded h-1 mb-6 overflow-hidden">
+<div class="bg-primary h-full w-1/3 animate-[pulse_1s_ease-in-out_infinite]"></div>
+</div>
+<button class="w-full h-control-height bg-surface-white hardware-inset rounded text-button-label font-button-label text-error hover:bg-error-container hover:text-on-error-container transition-colors" onclick="hideConnectingModal()">
+                ABORT SEQUENCE
+            </button>
+</div>
+</div>
+<script>
+        function showConnectingModal(deviceName) {
+            const modal = document.getElementById('connectingModal');
+            const content = document.getElementById('modalContent');
+            const nameEl = document.getElementById('connectingDeviceName');
+            
+            nameEl.textContent = `TARGET: ${deviceName}`;
+            
+            modal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before animating opacity
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+            
+            // Simulate connection success after 3 seconds
+            setTimeout(() => {
+                if(!modal.classList.contains('hidden')) {
+                     // In a real app, this would navigate to the dashboard
+                     hideConnectingModal();
+                     alert(`Successfully connected to ${deviceName}. Navigating to Live View...`);
+                }
+            }, 3000);
+        }
+
+        function hideConnectingModal() {
+            const modal = document.getElementById('connectingModal');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // match transition duration
+        }
+    </script>
+</body></html>

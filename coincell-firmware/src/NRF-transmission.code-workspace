@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "../../../NRF-transmission"
+		},
+		{
+			"name": "phase2-firmware",
+			"path": "../../../phase2-firmware"
+		},
+		{
+			"name": "phase2-firmware",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"nrf-connect.applications": []
+	}
+}

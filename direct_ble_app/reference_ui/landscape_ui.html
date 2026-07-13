@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ISRO Smart Accelerometer - Lab Deck</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts: Inter and JetBrains Mono for monospace lab readouts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        'lab-bg': '#f1f5f9',       /* Lab bench slate-100 */
+                        'lab-card': '#ffffff',     /* Pure white card surface */
+                        'lab-border': '#cbd5e1',   /* Slate 300 boundary lines */
+                        'lab-text': '#0f172a',     /* High contrast text */
+                        'lab-muted': '#64748b',    /* Secondary text */
+                        'lab-primary': '#1e40af',  /* Laboratory blue */
+                        'lab-accent': '#2563eb',   /* Tech blue active state */
+                        'trace-x': '#f97316',      /* Safety Orange */
+                        'trace-y': '#10b981',      /* Emerald Green */
+                        'trace-z': '#3b82f6'       /* Tech Blue */
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Modern Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Screen States Transitions */
+        .screen-state {
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Continuous rotation for spinners */
+        .spinner-rotate {
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Radar scan wave effect */
+        .radar-wave {
+            animation: radar 3s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+        }
+        @keyframes radar {
+            0% { transform: scale(0.2); opacity: 0.8; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        /* Sidebar slide transition */
+        #control-sidebar {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Active underline tab bar styles */
+        .active-tab-indicator {
+            border-bottom: 2px solid #1e40af;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body class="bg-lab-bg text-lab-text font-sans h-screen w-screen overflow-hidden select-none">
+
+    <!-- ==================== STATE 1: SPLASH SCREEN ==================== -->
+    <div id="screen-splash" class="screen-state absolute inset-0 bg-white flex flex-col items-center justify-center z-50">
+        <!-- Dot Grid Decorative Background -->
+        <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#0f172a 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
+        
+        <div class="z-10 flex flex-col items-center text-center px-6 max-w-2xl">
+            <!-- Logos Row -->
+            <div class="flex items-center justify-center gap-8 mb-12">
+                <div class="w-24 h-24 p-3 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-center">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXjEjwYHINbYDoqRucHTIkwM8fxbSPaKE65VUNpFvC-xA04m7rTEzqFjWcf1JmrUvZIsXaJNB3DyipyZG9vyuLvpPCfhZj848GNLZiIGikMwFlSmLsCmZP5Hk7bSGFoiT1TCKhTtt-dGhCW8kN-ZWJEA5pF1B5F2WUzi1Kl-gsMfoXDf38v0qMQ2guBdbvQk4Rlf9jdj7lVYXOOAfPL06UG4iAFfEHg4H6kcNfu5JfS_NOHciQlfvUHLsQj01a2vhPP7e7OOUBMA" alt="ISRO Logo" class="max-w-full max-h-full object-contain grayscale">
+                </div>
+                <div class="w-px h-12 bg-slate-300"></div>
+                <div class="w-24 h-24 p-3 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-center">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDozosxSEHN_MJ7SPlwss4aKk8w58kVBycZQ4Q7iLG69zyrVImndu-uZ_59A7s0REwEVjai6JBjkOqTluK8fFHCizPSoN-BhEQPYpvpfY3x5RDAIggsxcoV_DnDFJZGwZ3ev4oHKTJ6Ar1GZCbrGFboBVm_7G6G4Ch7jvNDGfzgrImPYeKcB4wgj9S_e2EQseMipyN79W3RbYwAe7J8Voke1D0E29PjPYeI0HKMo4fGhLFDplTCFzv9tWpZjdho7pXnM6Whh-NTkQ" alt="IIT Tirupati Logo" class="max-w-full max-h-full object-contain grayscale">
+                </div>
+            </div>
+
+            <!-- Titles -->
+            <span class="text-xs font-semibold uppercase tracking-widest text-lab-muted mb-2">ISRO Collaboration Project</span>
+            <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 mb-4">Smart Wireless Accelerometer</h1>
+            <p class="text-sm text-lab-muted max-w-md mb-10 leading-relaxed">High-Fidelity Vibration Acquisition & Laboratory Signal Analyzer</p>
+            
+            <!-- Loader -->
+            <div class="flex flex-col items-center gap-2">
+                <div class="flex space-x-1.5">
+                    <div class="w-2 h-2 rounded-full bg-lab-primary animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-2 h-2 rounded-full bg-trace-y animate-bounce" style="animation-delay: 0.2s"></div>
+                    <div class="w-2 h-2 rounded-full bg-trace-x animate-bounce" style="animation-delay: 0.3s"></div>
+                </div>
+                <span class="text-[10px] font-mono tracking-wider text-slate-400 mt-2 uppercase">Booting Instrument Core...</span>
+            </div>
+        </div>
+
+        <button onclick="transitionToConnection()" class="absolute bottom-12 px-6 py-2.5 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors shadow-sm uppercase tracking-wider">
+            Skip Splash
+        </button>
+    </div>
+
+
+    <!-- ==================== STATE 2: CONNECTION SCREEN ==================== -->
+    <div id="screen-connection" class="screen-state absolute inset-0 bg-lab-bg flex flex-col hidden opacity-0">
+        <!-- Top App Bar -->
+        <header class="h-14 bg-white border-b border-lab-border flex items-center justify-between px-6 shrink-0 shadow-sm">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-lab-primary font-bold">rocket_launch</span>
+                <span class="font-extrabold text-sm tracking-wide text-slate-800 uppercase">ISRO Smart Accelerometer</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-medium text-lab-muted">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>BLE DAQ Interface v1.0.4</span>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Left Side: Scanned Devices -->
+            <section class="w-1/2 p-6 flex flex-col border-r border-lab-border bg-white">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">Device Discovery</h2>
+                        <p class="text-[10px] font-mono text-lab-muted uppercase tracking-wider">BLE Scanning Channels 37, 38, 39</p>
+                    </div>
+                    <!-- Spin Radar Indicator -->
+                    <div class="relative w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full border border-slate-200">
+                        <span class="material-symbols-outlined text-sm text-lab-primary spinner-rotate">autorenew</span>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto space-y-3 pr-2" id="discovery-list">
+                    <!-- Discovered Card 1 -->
+                    <div onclick="openConnectModal('ISRO-SMAL-04X')" class="flex items-center justify-between p-4 bg-lab-bg border border-slate-200 rounded-lg cursor-pointer hover:border-lab-primary hover:bg-slate-50 transition-all group shadow-sm">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-9 h-9 bg-white border border-slate-200 rounded-md flex items-center justify-center text-slate-500 group-hover:text-lab-primary transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">router</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-sm text-slate-800">ISRO-SMAL-04X</h3>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    <span class="text-[10px] font-mono text-lab-muted">RSSI: -62 dBm | Uptime: 04:12</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-slate-400 group-hover:text-lab-primary transition-transform group-hover:translate-x-0.5">chevron_right</span>
+                    </div>
+
+                    <!-- Discovered Card 2 -->
+                    <div onclick="openConnectModal('ISRO-SMAL-09Y')" class="flex items-center justify-between p-4 bg-lab-bg border border-slate-200 rounded-lg cursor-pointer hover:border-lab-primary hover:bg-slate-50 transition-all group shadow-sm">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-9 h-9 bg-white border border-slate-200 rounded-md flex items-center justify-center text-slate-500 group-hover:text-lab-primary transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">router</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-sm text-slate-800">ISRO-SMAL-09Y</h3>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    <span class="text-[10px] font-mono text-lab-muted">RSSI: -76 dBm | Uptime: 01:45</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-slate-400 group-hover:text-lab-primary transition-transform group-hover:translate-x-0.5">chevron_right</span>
+                    </div>
+
+                    <!-- Radar Scan Animation -->
+                    <div class="flex flex-col items-center justify-center py-8 opacity-40">
+                        <div class="relative w-14 h-14 rounded-full border border-lab-primary border-dashed flex items-center justify-center mb-2">
+                            <div class="absolute inset-0 rounded-full border border-lab-primary/20 radar-wave"></div>
+                            <span class="material-symbols-outlined text-lab-primary">radar</span>
+                        </div>
+                        <span class="text-[10px] font-mono uppercase text-lab-muted">Searching for Accelerometers...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Connected Hardware List -->
+            <section class="w-1/2 p-6 flex flex-col bg-slate-50">
+                <div class="mb-6">
+                    <h2 class="text-lg font-bold text-slate-800">Connected Hardware</h2>
+                    <p class="text-[10px] font-mono text-lab-muted uppercase tracking-wider">Authorized Active Nodes</p>
+                </div>
+
+                <div class="flex-1 overflow-y-auto space-y-4" id="connected-list">
+                    <!-- Connected Card 1 (Clickable to enter dashboard) -->
+                    <div onclick="enterDashboard('LAB-NODE-Z1')" class="bg-white border border-lab-border rounded-lg p-4 cursor-pointer hover:shadow-md hover:border-lab-primary transition-all relative overflow-hidden group shadow-sm">
+                        <!-- Left indicator stripe -->
+                        <div class="absolute top-0 left-0 w-1 h-full bg-lab-primary"></div>
+                        
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-blue-50 text-lab-primary flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px]">developer_board</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-800">LAB-NODE-Z1</h3>
+                                    <span class="text-[10px] font-mono text-lab-muted">ADDR: F2:4A:89:C1:20:0C</span>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded text-[9px] font-bold tracking-wider uppercase border border-emerald-200">
+                                ACTIVE
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-xs border-t border-slate-100 pt-3 mt-1">
+                            <span class="text-lab-muted">Calibration: <strong class="text-slate-700">Offset OK</strong></span>
+                            <span class="font-mono text-lab-primary font-bold">1024 Hz Burst</span>
+                        </div>
+                    </div>
+
+                    <!-- Inactive Node Card -->
+                    <div class="bg-white border border-slate-200 rounded-lg p-4 opacity-60 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-slate-400"></div>
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[18px]">developer_board</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-700">TEST-RIG-02</h3>
+                                    <span class="text-[10px] font-mono text-slate-400">ADDR: C0:1B:5A:02:88:FF</span>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[9px] font-bold tracking-wider uppercase border border-slate-200">
+                                OFFLINE
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs border-t border-slate-100 pt-3 mt-1">
+                            <span class="text-slate-400">Last seen: 2 hours ago</span>
+                            <span class="font-mono text-slate-400">Disconnected</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Connection Overlay Modal (Hidden by Default) -->
+        <div id="connect-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+            <div class="bg-white border border-lab-border rounded-xl p-6 w-[340px] shadow-2xl flex flex-col items-center">
+                <!-- Smart Buffer Loader Ring -->
+                <div class="relative w-20 h-20 mb-6">
+                    <svg class="w-full h-full text-slate-100" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="8"></circle>
+                    </svg>
+                    <!-- Active spinning segment -->
+                    <svg class="w-full h-full text-lab-primary absolute top-0 left-0 spinner-rotate" style="stroke-dasharray: 260; stroke-dashoffset: 80; stroke-linecap: round;" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="8"></circle>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center text-lab-primary">
+                        <span class="material-symbols-outlined text-2xl">bluetooth_connected</span>
+                    </div>
+                </div>
+
+                <h3 class="text-base font-bold text-slate-800 mb-1">Connecting Accelerometer</h3>
+                <p id="modal-device-name" class="text-xs font-mono text-lab-muted uppercase mb-5">TARGET: ISRO-SMAL-04X</p>
+                
+                <!-- Smart Buffer progress text -->
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-6 overflow-hidden relative">
+                    <div class="bg-lab-primary h-full w-1/3 rounded-full animate-[pulse_1s_ease-in-out_infinite]"></div>
+                </div>
+
+                <button onclick="closeConnectModal()" class="w-full py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all">
+                    Abort Sequence
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== STATE 3: MAIN SCREEN ==================== -->
+    <div id="screen-main" class="screen-state absolute inset-0 bg-lab-bg flex flex-col hidden opacity-0">
+        <!-- Top App Bar -->
+        <header class="h-14 bg-white border-b border-lab-border flex items-center justify-between px-6 shrink-0 shadow-sm z-30">
+            <div class="flex items-center gap-3">
+                <button onclick="backToConnection()" class="text-slate-500 hover:text-lab-primary hover:bg-slate-100 p-1.5 rounded-full transition-colors flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                </button>
+                <div class="w-px h-6 bg-slate-300"></div>
+                <span class="font-extrabold text-sm tracking-wide text-slate-800 uppercase">ISRO Lab Deck</span>
+            </div>
+
+            <!-- Active Instrument Info Panel -->
+            <div class="hidden md:flex items-center gap-4 text-xs">
+                <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span class="font-semibold text-slate-700">LAB-NODE-Z1</span>
+                    <span class="text-slate-400">|</span>
+                    <span class="font-mono text-lab-primary font-bold">1024 Hz</span>
+                </div>
+            </div>
+
+            <!-- Top Controls Area -->
+            <div class="flex items-center gap-2">
+                <button onclick="openExportModal()" class="flex items-center gap-1.5 px-3 py-2 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 rounded-md text-xs font-semibold transition-all">
+                    <span class="material-symbols-outlined text-[18px]">download</span>
+                    <span>Export Data</span>
+                </button>
+                <button onclick="toggleSnrPanel()" class="flex items-center gap-1.5 px-3 py-2 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 rounded-md text-xs font-semibold transition-all" id="snr-toggle-btn">
+                    <span class="material-symbols-outlined text-[18px]">query_stats</span>
+                    <span>SNR Metrics</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Body Workspace -->
+        <div class="flex-1 flex overflow-hidden relative">
+            <!-- COLLAPSIBLE CONTROL SIDEBAR -->
+            <aside id="control-sidebar" class="w-80 h-full bg-white border-r border-lab-border flex flex-col z-20 shrink-0 relative">
+                <!-- Toggle Tab Button -->
+                <button onclick="toggleSidebar()" class="absolute -right-3.5 top-6 w-3.5 h-14 bg-white border-r border-y border-lab-border rounded-r-md shadow-sm flex items-center justify-center hover:bg-slate-50 z-30" id="sidebar-toggle-btn" title="Toggle Side Control Panel">
+                    <span class="material-symbols-outlined text-[14px] text-slate-500 font-bold transition-transform duration-300" id="sidebar-toggle-icon">chevron_left</span>
+                </button>
+
+                <div class="flex-1 overflow-y-auto p-5 space-y-6">
+                    <!-- SECTION 1: Acquisition Controls -->
+                    <section class="space-y-3">
+                        <h3 class="text-[10px] font-bold uppercase tracking-wider text-lab-muted">Acquisition Controls</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="start-btn" onclick="startSim()" class="col-span-2 py-3 bg-lab-primary hover:bg-blue-800 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all border border-blue-900 active:scale-98">
+                                <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                                <span>START ACQUISITION</span>
+                            </button>
+                            <button id="stop-btn" onclick="stopSim()" class="py-2.5 bg-slate-50 border border-slate-200 hover:bg-slate-100 text-rose-600 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all opacity-50 cursor-not-allowed" disabled>
+                                <span class="material-symbols-outlined text-[16px]">stop</span>
+                                <span>STOP</span>
+                            </button>
+                            <button id="pause-btn" onclick="pauseSim()" class="py-2.5 bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all opacity-50 cursor-not-allowed" disabled>
+                                <span class="material-symbols-outlined text-[16px]">pause</span>
+                                <span>PAUSE</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 2: Offset Calibration -->
+                    <section class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-[10px] font-bold uppercase tracking-wider text-lab-muted">Offset Calibration</h3>
+                            <button onclick="triggerCalibration('tare')" class="text-xs font-bold text-lab-primary hover:underline flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">sync</span>
+                                <span>Zero Tare</span>
+                            </button>
+                        </div>
+                        <div class="space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-200 shadow-inner">
+                            <!-- X Axis -->
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-trace-x"></span>
+                                    <span class="font-medium text-slate-600">X-Axis Offset</span>
+                                </div>
+                                <div class="flex items-center border border-slate-300 rounded bg-white overflow-hidden">
+                                    <button onclick="adjustOffset('x', -0.01)" class="w-7 h-7 flex items-center justify-center hover:bg-slate-100 text-slate-500 border-r border-slate-300 font-bold">-</button>
+                                    <span id="offset-x" class="w-14 text-center font-mono text-[11px] font-bold text-slate-700">+0.000</span>
+                                    <button onclick="adjustOffset('x', 0.01)" class="w-7 h-7 flex items-center justify-center hover:bg-slate-100 text-slate-500 border-l border-slate-300 font-bold">+</button>
+                                </div>
+                            </div>
+                            <!-- Y Axis -->
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-trace-y"></span>
+                                    <span class="font-medium text-slate-600">Y-Axis Offset</span>
+                                </div>
+                                <div class="flex items-center border border-slate-300 rounded bg-white overflow-hidden">
+                                    <button onclick="adjustOffset('y', -0.01)" class="w-7 h-7 flex items-center justify-center hover:bg-slate-100 text-slate-500 border-r border-slate-300 font-bold">-</button>
+                                    <span id="offset-y" class="w-14 text-center font-mono text-[11px] font-bold text-slate-700">+0.000</span>
+                                    <button onclick="adjustOffset('y', 0.01)" class="w-7 h-7 flex items-center justify-center hover:bg-slate-100 text-slate-500 border-l border-slate-300 font-bold">+</button>
+                                </div>
+                            </div>
+                            <!-- Z Axis -->
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-trace-z"></span>
+                                    <span class="font-medium text-slate-600">Z-Axis Offset</span>
+                                </div>
+                                <div class="flex items-center border border-slate-300 rounded bg-white overflow-hidden">
+                                    <button onclick="adjustOffset('z', -0.01)" class="w-7 h-7 flex items-center justify-center hover:bg-slate-100 text-slate-500 border-r border-slate-300 font-bold">-</button>
+                                    <span id="offset-z" class="w-14 text-center font-mono text-[11px] font-bold text-slate-700">+0.000</span>
+                                    <button onclick="adjustOffset('z', 0.01)" class="w-7 h-7 flex items-center justify-center hover:bg-slate-100 text-slate-500 border-l border-slate-300 font-bold">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 3: Run Configuration -->
+                    <section class="space-y-3">
+                        <h3 class="text-[10px] font-bold uppercase tracking-wider text-lab-muted">Run Configuration</h3>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-semibold text-slate-700">Enable Timed Run</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="timed-run-toggle" class="sr-only peer" onchange="toggleTimedRunSettings()">
+                                    <div class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-lab-primary"></div>
+                                </label>
+                            </div>
+                            <!-- Slide out duration config -->
+                            <div id="timed-run-settings" class="hidden space-y-2">
+                                <div class="flex items-center justify-between text-xs text-slate-600">
+                                    <span>Duration Limit:</span>
+                                    <span class="font-mono font-bold text-lab-primary" id="duration-val">10 seconds</span>
+                                </div>
+                                <input type="range" id="duration-slider" min="5" max="60" value="10" step="5" class="w-full accent-lab-primary" oninput="updateDurationLabel(this.value)">
+                            </div>
+                            <!-- Mode selector -->
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Buffer Latency</label>
+                                <select id="buffer-mode" class="w-full bg-white border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-lab-primary">
+                                    <option value="0x10">29ms (Zero Buffer)</option>
+                                    <option value="0x11" selected>232ms (Default Laboratory)</option>
+                                    <option value="0x12">512ms (Deep Buffer)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </aside>
+
+            <!-- MAIN CHART CANVAS CONTAINER -->
+            <section class="flex-1 p-4 flex flex-col h-full bg-slate-100 min-w-0 z-10 overflow-hidden relative">
+                <!-- CHART CONTAINER -->
+                <div class="flex-1 bg-white rounded-xl border border-lab-border shadow-sm flex flex-col overflow-hidden relative">
+                    <!-- Graph Header Overlays -->
+                    <div class="absolute top-3 left-4 flex items-center gap-3 z-10 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm">
+                        <span class="text-xs font-bold text-slate-700">Real-Time Oscilloscope</span>
+                        <div class="w-px h-4 bg-slate-200"></div>
+                        <!-- Axis toggles -->
+                        <div class="flex gap-1.5">
+                            <button onclick="toggleTrace('x')" id="toggle-x" class="px-2 py-0.5 rounded text-[10px] font-bold border border-orange-500 bg-orange-50 text-orange-600">X</button>
+                            <button onclick="toggleTrace('y')" id="toggle-y" class="px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-500 bg-emerald-50 text-emerald-600">Y</button>
+                            <button onclick="toggleTrace('z')" id="toggle-z" class="px-2 py-0.5 rounded text-[10px] font-bold border border-blue-500 bg-blue-50 text-blue-600">Z</button>
+                        </div>
+                    </div>
+
+                    <!-- Right Header Overlays: Zoom & Auto Scale -->
+                    <div class="absolute top-3 right-4 flex items-center gap-2 z-10 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm">
+                        <!-- Auto scale Y -->
+                        <div class="flex items-center gap-1.5 mr-2">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Auto Y</label>
+                            <input type="checkbox" id="auto-scale" checked class="rounded border-slate-300 text-lab-primary focus:ring-lab-primary w-3.5 h-3.5" onchange="toggleAutoScale(this.checked)">
+                        </div>
+                        <div class="w-px h-4 bg-slate-200"></div>
+                        <!-- Time zoom -->
+                        <div class="flex items-center gap-1">
+                            <button onclick="zoomTime(-0.25)" class="w-6 h-6 flex items-center justify-center border border-slate-300 hover:bg-slate-100 rounded text-xs font-bold text-slate-600">-</button>
+                            <span id="window-seconds-display" class="text-[10px] font-mono font-bold text-slate-700 px-1">1.0s</span>
+                            <button onclick="zoomTime(0.25)" class="w-6 h-6 flex items-center justify-center border border-slate-300 hover:bg-slate-100 rounded text-xs font-bold text-slate-600">+</button>
+                        </div>
+                    </div>
+
+                    <!-- CANVAS GRID PAINT AREA -->
+                    <div class="flex-1 relative bg-slate-50">
+                        <canvas id="time-domain-canvas" class="w-full h-full block cursor-crosshair"></canvas>
+                        
+                        <!-- Simulated grid helper lines generated dynamically in JS -->
+                    </div>
+
+                    <!-- LIVE READOUT METRICS FOOTER (Whitish theme grid) -->
+                    <div class="bg-white border-t border-slate-200 px-6 py-3 shrink-0 flex items-center justify-around z-10 shadow-inner">
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Instantaneous X</span>
+                            <span class="font-mono text-lg font-bold text-trace-x" id="readout-x">+0.000 <span class="text-xs font-normal text-slate-400">g</span></span>
+                        </div>
+                        <div class="w-px h-8 bg-slate-200"></div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Instantaneous Y</span>
+                            <span class="font-mono text-lg font-bold text-trace-y" id="readout-y">+0.000 <span class="text-xs font-normal text-slate-400">g</span></span>
+                        </div>
+                        <div class="w-px h-8 bg-slate-200"></div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Instantaneous Z</span>
+                            <span class="font-mono text-lg font-bold text-trace-z" id="readout-z">+1.000 <span class="text-xs font-normal text-slate-400">g</span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BRAINSTORMED FEATURE 1: DYNAMIC COLLAPSIBLE SNR & SPECTRAL PANEL -->
+            <aside id="snr-sidebar" class="w-72 h-full bg-white border-l border-lab-border flex flex-col z-20 shrink-0 hidden">
+                <div class="p-5 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-sm">Vibration SNR Lab</h3>
+                    <button onclick="toggleSnrPanel()" class="text-slate-400 hover:text-slate-600 flex items-center">
+                        <span class="material-symbols-outlined text-[20px]">close</span>
+                    </button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-5 space-y-6">
+                    <!-- Calibration Section -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-[10px] font-bold uppercase tracking-wider text-lab-muted">Noise Baseline</h4>
+                            <button onclick="triggerCalibration('noise')" class="text-xs font-bold text-lab-primary hover:underline flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">refresh</span>
+                                <span>Recalibrate</span>
+                            </button>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2 font-mono text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Floor X:</span>
+                                <span class="font-bold text-slate-700" id="noise-x">1.24 mg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Floor Y:</span>
+                                <span class="font-bold text-slate-700" id="noise-y">1.35 mg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Floor Z:</span>
+                                <span class="font-bold text-slate-700" id="noise-z">2.10 mg</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live RMS Analysis -->
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-bold uppercase tracking-wider text-lab-muted">Live Signal RMS</h4>
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 space-y-2 font-mono text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Signal X:</span>
+                                <span class="font-bold text-slate-700" id="rms-x">0.00 mg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Signal Y:</span>
+                                <span class="font-bold text-slate-700" id="rms-y">0.00 mg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Signal Z:</span>
+                                <span class="font-bold text-slate-700" id="rms-z">0.00 mg</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active SNR Readout -->
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-bold uppercase tracking-wider text-lab-muted">Signal-to-Noise Ratio</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded border border-slate-200">
+                                <span class="text-xs font-semibold text-slate-600">X Channel:</span>
+                                <span id="snr-val-x" class="px-2 py-0.5 bg-slate-200 text-slate-600 rounded font-mono text-xs font-bold">-- dB</span>
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded border border-slate-200">
+                                <span class="text-xs font-semibold text-slate-600">Y Channel:</span>
+                                <span id="snr-val-y" class="px-2 py-0.5 bg-slate-200 text-slate-600 rounded font-mono text-xs font-bold">-- dB</span>
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded border border-slate-200">
+                                <span class="text-xs font-semibold text-slate-600">Z Channel:</span>
+                                <span id="snr-val-z" class="px-2 py-0.5 bg-slate-200 text-slate-600 rounded font-mono text-xs font-bold">-- dB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- CALIBRATION RUNNING MODAL (General Overlay) -->
+        <div id="calibration-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+            <div class="bg-white border border-lab-border rounded-xl p-6 w-[320px] shadow-2xl flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full border-2 border-slate-200 border-t-lab-primary animate-spin mb-4"></div>
+                <h3 id="calib-title" class="text-sm font-bold text-slate-800 mb-1">Calibrating Accelerometer</h3>
+                <p id="calib-message" class="text-xs text-lab-muted text-center mb-5">Please keep the sensor mounted flat and stationary.</p>
+                <!-- Countdown -->
+                <div class="w-full bg-slate-100 rounded-full h-2 mb-3 overflow-hidden">
+                    <div id="calib-progress" class="bg-lab-primary h-full w-0 transition-all duration-100"></div>
+                </div>
+                <span id="calib-countdown" class="font-mono text-base font-bold text-lab-primary">3.0s</span>
+            </div>
+        </div>
+
+        <!-- BRAINSTORMED FEATURE 2: SAVE/EXPORT CSV MODAL -->
+        <div id="export-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+            <div class="bg-white border border-lab-border rounded-xl p-6 w-[360px] shadow-2xl">
+                <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-lab-primary">save</span>
+                    <span>Save Experiment Data</span>
+                </h3>
+                
+                <div class="space-y-4 mb-6">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">Export File Name</label>
+                        <div class="flex border border-slate-300 rounded-md overflow-hidden focus-within:border-lab-primary">
+                            <input type="text" id="csv-filename" value="accel_run_01" class="flex-1 px-3 py-1.5 text-xs text-slate-700 border-none focus:ring-0">
+                            <span class="bg-slate-100 px-3 py-1.5 text-xs text-slate-400 font-mono border-l border-slate-300">.csv</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">Experiment Metadata</label>
+                        <input type="text" id="csv-operator" value="ISRO_DAQ_USER" placeholder="Operator initials / Test Rig ID" class="w-full border border-slate-300 rounded-md px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-lab-primary">
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="closeExportModal()" class="flex-1 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-md text-xs font-semibold uppercase tracking-wider transition-all">
+                        Cancel
+                    </button>
+                    <button onclick="executeCSVDownload()" class="flex-1 py-2 bg-lab-primary hover:bg-blue-800 text-white rounded-md text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">download</span>
+                        <span>Download</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== CORE INTERACTIVE LOGIC ==================== -->
+    <script>
+        // State Machine
+        let currentScreen = 'screen-splash';
+
+        // Auto-redirect Splash to Connection Screen after 2.5s
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (currentScreen === 'screen-splash') {
+                    transitionToConnection();
+                }
+            }, 2500);
+            
+            // Init Canvas Size
+            initCanvas();
+        });
+
+        function transitionToConnection() {
+            const splash = document.getElementById('screen-splash');
+            const conn = document.getElementById('screen-connection');
+            
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                conn.classList.remove('hidden');
+                setTimeout(() => {
+                    conn.style.opacity = '1';
+                    currentScreen = 'screen-connection';
+                }, 50);
+            }, 500);
+        }
+
+        // Connection Screen Modals
+        function openConnectModal(deviceName) {
+            const modal = document.getElementById('connect-modal');
+            document.getElementById('modal-device-name').textContent = `TARGET: ${deviceName}`;
+            modal.classList.remove('hidden');
+
+            // Simulate "Smart Buffer" calibration connection handshake
+            setTimeout(() => {
+                closeConnectModal();
+                // Add the device dynamically as Active to Connected Hardware list if not already
+                alert(`Successfully connected and calibrated ${deviceName}! Proceed to Live Deck.`);
+            }, 2000);
+        }
+
+        function closeConnectModal() {
+            const modal = document.getElementById('connect-modal');
+            modal.classList.add('hidden');
+        }
+
+        // Transition from Connection to Main Screen
+        function enterDashboard(deviceName) {
+            const conn = document.getElementById('screen-connection');
+            const main = document.getElementById('screen-main');
+            
+            conn.style.opacity = '0';
+            setTimeout(() => {
+                conn.classList.add('hidden');
+                main.classList.remove('hidden');
+                setTimeout(() => {
+                    main.style.opacity = '1';
+                    currentScreen = 'screen-main';
+                    // Trigger canvas resize
+                    resizeCanvas();
+                }, 50);
+            }, 500);
+        }
+
+        function backToConnection() {
+            const conn = document.getElementById('screen-connection');
+            const main = document.getElementById('screen-main');
+            
+            stopSim(); // Make sure telemetry is paused
+            
+            main.style.opacity = '0';
+            setTimeout(() => {
+                main.classList.add('hidden');
+                conn.classList.remove('hidden');
+                setTimeout(() => {
+                    conn.style.opacity = '1';
+                    currentScreen = 'screen-connection';
+                }, 50);
+            }, 500);
+        }
+
+
+        // ==================== MAIN SCREEN INTERACTIVITY ====================
+        
+        // Sidebar Collapsing with dynamic chart adjustment
+        let isSidebarExpanded = true;
+        function toggleSidebar() {
+            const sidebar = document.getElementById('control-sidebar');
+            const icon = document.getElementById('sidebar-toggle-icon');
+            
+            isSidebarExpanded = !isSidebarExpanded;
+            if (isSidebarExpanded) {
+                sidebar.style.width = '20rem'; // 320px
+                sidebar.style.marginLeft = '0px';
+                icon.style.transform = 'rotate(0deg)';
+                // Unhide content
+                setTimeout(() => {
+                    Array.from(sidebar.children).forEach(c => {
+                        if(c.id !== 'sidebar-toggle-btn') c.style.opacity = '1';
+                    });
+                }, 100);
+            } else {
+                // Hide content during collapse to prevent layouts breaking
+                Array.from(sidebar.children).forEach(c => {
+                    if(c.id !== 'sidebar-toggle-btn') c.style.opacity = '0';
+                });
+                sidebar.style.width = '0px';
+                sidebar.style.marginLeft = '-1px';
+                icon.style.transform = 'rotate(180deg)';
+            }
+            
+            // Re-render chart size matching new container geometry after transition
+            let timer = 0;
+            const interval = setInterval(() => {
+                resizeCanvas();
+                timer += 20;
+                if(timer >= 400) clearInterval(interval);
+            }, 20);
+        }
+
+        // Trace Visibility State
+        let activeTraces = { x: true, y: true, z: true };
+        function toggleTrace(axis) {
+            const btn = document.getElementById(`toggle-${axis}`);
+            activeTraces[axis] = !activeTraces[axis];
+            
+            if (activeTraces[axis]) {
+                btn.classList.remove('opacity-40', 'bg-white', 'text-slate-400');
+                if(axis === 'x') btn.className = 'px-2 py-0.5 rounded text-[10px] font-bold border border-orange-500 bg-orange-50 text-orange-600';
+                if(axis === 'y') btn.className = 'px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-500 bg-emerald-50 text-emerald-600';
+                if(axis === 'z') btn.className = 'px-2 py-0.5 rounded text-[10px] font-bold border border-blue-500 bg-blue-50 text-blue-600';
+            } else {
+                btn.className = 'px-2 py-0.5 rounded text-[10px] font-bold border border-slate-300 bg-white text-slate-400 opacity-40';
+            }
+        }
+
+        // Auto Scaling Y-Axis
+        let autoScaleY = true;
+        function toggleAutoScale(isChecked) {
+            autoScaleY = isChecked;
+        }
+
+        // Zoom Time-domain Window
+        let windowSeconds = 1.0;
+        function zoomTime(delta) {
+            windowSeconds = Math.max(0.25, Math.min(5.0, windowSeconds + delta));
+            document.getElementById('window-seconds-display').textContent = `${windowSeconds.toFixed(2)}s`;
+        }
+
+        // Calibration Handlers
+        function triggerCalibration(type) {
+            const overlay = document.getElementById('calibration-overlay');
+            const title = document.getElementById('calib-title');
+            const message = document.getElementById('calib-message');
+            const countdownEl = document.getElementById('calib-countdown');
+            const progress = document.getElementById('calib-progress');
+            
+            let count = type === 'tare' ? 3.0 : 10.0;
+            title.textContent = type === 'tare' ? 'Calibrating Zero-g Offsets' : 'Measuring Noise Floor';
+            message.textContent = type === 'tare' ? 'Keep the sensor flat and completely stationary.' : 'Rigidly clamp the sensor during the calculation.';
+            
+            overlay.classList.remove('hidden');
+            progress.style.width = '0%';
+            
+            const startVal = count;
+            const interval = setInterval(() => {
+                count -= 0.1;
+                if (count <= 0) {
+                    clearInterval(interval);
+                    overlay.classList.add('hidden');
+                    if (type === 'tare') {
+                        // Reset Offsets values in display
+                        document.getElementById('offset-x').textContent = '+0.000';
+                        document.getElementById('offset-y').textContent = '+0.000';
+                        document.getElementById('offset-z').textContent = '+1.000';
+                    } else {
+                        // Set noise baseline variables randomly to represent real numbers
+                        document.getElementById('noise-x').textContent = `${(1.0 + Math.random()*0.5).toFixed(2)} mg`;
+                        document.getElementById('noise-y').textContent = `${(1.0 + Math.random()*0.5).toFixed(2)} mg`;
+                        document.getElementById('noise-z').textContent = `${(1.8 + Math.random()*0.5).toFixed(2)} mg`;
+                    }
+                } else {
+                    countdownEl.textContent = `${count.toFixed(1)}s`;
+                    progress.style.width = `${((startVal - count) / startVal) * 100}%`;
+                }
+            }, 100);
+        }
+
+        // Manual Offset Adjusters
+        let offsets = { x: 0.0, y: 0.0, z: 0.0 };
+        function adjustOffset(axis, val) {
+            offsets[axis] += val;
+            const sign = offsets[axis] >= 0 ? '+' : '';
+            document.getElementById(`offset-${axis}`).textContent = `${sign}${offsets[axis].toFixed(3)}`;
+        }
+
+        // Timed Run Switch
+        function toggleTimedRunSettings() {
+            const isChecked = document.getElementById('timed-run-toggle').checked;
+            const container = document.getElementById('timed-run-settings');
+            if (isChecked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function updateDurationLabel(val) {
+            document.getElementById('duration-val').textContent = `${val} seconds`;
+        }
+
+        // Save CSV Panel controls
+        function openExportModal() {
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+        function executeCSVDownload() {
+            const filename = document.getElementById('csv-filename').value || 'accel_run_01';
+            
+            // Build simple simulated CSV payload
+            let csvContent = "data:text/csv;charset=utf-8,Timestamp(ms),X(g),Y(g),Z(g)\n";
+            for (let i = 0; i < 100; i++) {
+                const ts = i * 10;
+                const xVal = (Math.sin(i / 10.0) * 0.1).toFixed(4);
+                const yVal = (Math.cos(i / 8.0) * 0.08).toFixed(4);
+                const zVal = (1.0 + Math.sin(i / 5.0) * 0.15).toFixed(4);
+                csvContent += `${ts},${xVal},${yVal},${zVal}\n`;
+            }
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${filename}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            closeExportModal();
+        }
+
+        // SNR Sidepanel
+        let isSnrPanelVisible = false;
+        function toggleSnrPanel() {
+            isSnrPanelVisible = !isSnrPanelVisible;
+            const panel = document.getElementById('snr-sidebar');
+            const btn = document.getElementById('snr-toggle-btn');
+            
+            if (isSnrPanelVisible) {
+                panel.classList.remove('hidden');
+                btn.classList.add('bg-blue-50', 'text-lab-primary', 'border-lab-primary');
+            } else {
+                panel.classList.add('hidden');
+                btn.classList.remove('bg-blue-50', 'text-lab-primary', 'border-lab-primary');
+            }
+            
+            // Adjust canvas sizes
+            resizeCanvas();
+        }
+
+
+        // ==================== REAL-TIME PLOTTING & SIGNAL SIMULATOR ====================
+        let canvas, ctx;
+        let isSimulating = false;
+        let simTime = 0.0;
+        let dataQueue = [];
+        let animationFrameId;
+
+        // Baseline Laboratory constants
+        let baselineNoise = { x: 0.0012, y: 0.0013, z: 0.0021 };
+
+        function initCanvas() {
+            canvas = document.getElementById('time-domain-canvas');
+            ctx = canvas.getContext('2d');
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+        }
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            const rect = canvas.parentNode.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            drawGrid();
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Background fill
+            ctx.fillStyle = '#fafafa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Laboratory grid lines
+            ctx.lineWidth = 1.0;
+            ctx.strokeStyle = '#e2e8f0';
+
+            const divisionsX = 10;
+            const divisionsY = 8;
+            
+            // Vertical lines
+            for (let i = 1; i < divisionsX; i++) {
+                const x = (canvas.width / divisionsX) * i;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            // Horizontal lines
+            for (let i = 1; i < divisionsY; i++) {
+                const y = (canvas.height / divisionsY) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Zero line center indicator
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
+        }
+
+        function startSim() {
+            isSimulating = true;
+            
+            // Enable controls state
+            document.getElementById('start-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('start-btn').disabled = true;
+            document.getElementById('stop-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('stop-btn').disabled = false;
+            document.getElementById('pause-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('pause-btn').disabled = false;
+
+            // Start timed run check if enabled
+            const isTimed = document.getElementById('timed-run-toggle').checked;
+            if (isTimed) {
+                const duration = parseInt(document.getElementById('duration-slider').value);
+                setTimeout(() => {
+                    if (isSimulating) {
+                        stopSim();
+                        alert(`Timed Run finished successfully! (${duration}s)`);
+                    }
+                }, duration * 1000);
+            }
+
+            // Playout Loop
+            animationFrameId = requestAnimationFrame(simFrame);
+        }
+
+        function pauseSim() {
+            isSimulating = false;
+            cancelAnimationFrame(animationFrameId);
+            
+            document.getElementById('start-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('pause-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('pause-btn').disabled = true;
+        }
+
+        function stopSim() {
+            isSimulating = false;
+            cancelAnimationFrame(animationFrameId);
+            dataQueue = [];
+            simTime = 0.0;
+            
+            document.getElementById('start-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('start-btn').disabled = false;
+            document.getElementById('stop-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('stop-btn').disabled = true;
+            document.getElementById('pause-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('pause-btn').disabled = true;
+            
+            drawGrid();
+        }
+
+        function simFrame() {
+            if (!isSimulating) return;
+
+            // Add new data points matching 1024Hz sampling (simulated via 60fps frame delta)
+            const sampleDelta = 10; // add 10 points per animation frame to simulate rapid burst
+            for (let i = 0; i < sampleDelta; i++) {
+                simTime += 0.001; // 1 ms steps
+
+                // Simulated industrial signal: Vibration components at 45Hz + 120Hz + Random Noise
+                const noiseX = (Math.random() - 0.5) * 0.015;
+                const noiseY = (Math.random() - 0.5) * 0.012;
+                const noiseZ = (Math.random() - 0.5) * 0.025;
+
+                const valX = Math.sin(simTime * 2 * Math.PI * 35.0) * 0.25 + Math.sin(simTime * 2 * Math.PI * 110.0) * 0.08 + noiseX;
+                const valY = Math.cos(simTime * 2 * Math.PI * 35.0) * 0.18 + Math.cos(simTime * 2 * Math.PI * 85.0) * 0.05 + noiseY;
+                const valZ = 1.0 + Math.sin(simTime * 2 * Math.PI * 35.0) * 0.35 + Math.sin(simTime * 2 * Math.PI * 150.0) * 0.12 + noiseZ;
+
+                dataQueue.push({
+                    t: simTime,
+                    x: valX + offsets.x,
+                    y: valY + offsets.y,
+                    z: valZ + (offsets.z - 1.0) // offset calibration adjusts relative to gravity
+                });
+            }
+
+            // Maintain window buffer size matching Zoom window-seconds
+            const maxSamples = Math.ceil(windowSeconds * 1024);
+            while (dataQueue.length > maxSamples) {
+                dataQueue.shift();
+            }
+
+            // Draw Screen
+            drawGrid();
+            drawTraces();
+
+            // Live metrics update
+            if (dataQueue.length > 0) {
+                const latest = dataQueue[dataQueue.length - 1];
+                document.getElementById('readout-x').innerHTML = `${latest.x >= 0 ? '+' : ''}${latest.x.toFixed(3)} <span class="text-xs font-normal text-slate-400">g</span>`;
+                document.getElementById('readout-y').innerHTML = `${latest.y >= 0 ? '+' : ''}${latest.y.toFixed(3)} <span class="text-xs font-normal text-slate-400">g</span>`;
+                document.getElementById('readout-z').innerHTML = `${latest.z >= 0 ? '+' : ''}${latest.z.toFixed(3)} <span class="text-xs font-normal text-slate-400">g</span>`;
+
+                // Calculate Live RMS and SNR values
+                if (isSnrPanelVisible && dataQueue.length >= 100) {
+                    updateSnrMetrics();
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(simFrame);
+        }
+
+        function drawTraces() {
+            if (dataQueue.length < 2) return;
+
+            // Determine Y bounds. If Auto scale, scan data bounds; otherwise manual
+            let minY = -2.0, maxY = 2.0;
+            if (autoScaleY) {
+                let dataMin = Infinity, dataMax = -Infinity;
+                dataQueue.forEach(d => {
+                    if (activeTraces.x) {
+                        dataMin = Math.min(dataMin, d.x);
+                        dataMax = Math.max(dataMax, d.x);
+                    }
+                    if (activeTraces.y) {
+                        dataMin = Math.min(dataMin, d.y);
+                        dataMax = Math.max(dataMax, d.y);
+                    }
+                    if (activeTraces.z) {
+                        dataMin = Math.min(dataMin, d.z);
+                        dataMax = Math.max(dataMax, d.z);
+                    }
+                });
+                
+                // Pad data boundaries slightly
+                if (dataMin !== Infinity && dataMax !== -Infinity) {
+                    const range = dataMax - dataMin;
+                    minY = dataMin - Math.max(0.1, range * 0.15);
+                    maxY = dataMax + Math.max(0.1, range * 0.15);
+                }
+            }
+
+            const scaleX = (val) => {
+                const startT = dataQueue[0].t;
+                const endT = dataQueue[dataQueue.length - 1].t;
+                const totalT = endT - startT;
+                if (totalT === 0) return 0;
+                return ((val - startT) / totalT) * canvas.width;
+            };
+
+            const scaleY = (val) => {
+                const range = maxY - minY;
+                if (range === 0) return canvas.height / 2;
+                return canvas.height - (((val - minY) / range) * canvas.height);
+            };
+
+            // Draw X Axis Trace (Orange)
+            if (activeTraces.x) {
+                ctx.strokeStyle = '#f97316';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.moveTo(scaleX(dataQueue[0].t), scaleY(dataQueue[0].x));
+                for (let i = 1; i < dataQueue.length; i++) {
+                    ctx.lineTo(scaleX(dataQueue[i].t), scaleY(dataQueue[i].x));
+                }
+                ctx.stroke();
+            }
+
+            // Draw Y Axis Trace (Green)
+            if (activeTraces.y) {
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.moveTo(scaleX(dataQueue[0].t), scaleY(dataQueue[0].y));
+                for (let i = 1; i < dataQueue.length; i++) {
+                    ctx.lineTo(scaleX(dataQueue[i].t), scaleY(dataQueue[i].y));
+                }
+                ctx.stroke();
+            }
+
+            // Draw Z Axis Trace (Blue)
+            if (activeTraces.z) {
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.moveTo(scaleX(dataQueue[0].t), scaleY(dataQueue[0].z));
+                for (let i = 1; i < dataQueue.length; i++) {
+                    ctx.lineTo(scaleX(dataQueue[i].t), scaleY(dataQueue[i].z));
+                }
+                ctx.stroke();
+            }
+        }
+
+        // Live calculation for SNR panel
+        function updateSnrMetrics() {
+            // Compute simple root-mean-square (RMS) for Z trace
+            let sumSqX = 0, sumSqY = 0, sumSqZ = 0;
+            const sliceSize = Math.min(200, dataQueue.length);
+            const slice = dataQueue.slice(-sliceSize);
+
+            slice.forEach(d => {
+                sumSqX += d.x * d.x;
+                sumSqY += d.y * d.y;
+                sumSqZ += d.z * d.z;
+            });
+
+            const rmsX = Math.sqrt(sumSqX / sliceSize);
+            const rmsY = Math.sqrt(sumSqY / sliceSize);
+            const rmsZ = Math.sqrt(sumSqZ / sliceSize);
+
+            document.getElementById('rms-x').textContent = `${(rmsX * 1000).toFixed(2)} mg`;
+            document.getElementById('rms-y').textContent = `${(rmsY * 1000).toFixed(2)} mg`;
+            document.getElementById('rms-z').textContent = `${(rmsZ * 1000).toFixed(2)} mg`;
+
+            // Compute SNR (expressed in dB: 20 * log10(Signal RMS / Noise Floor))
+            const getSnr = (rms, floor) => {
+                if (rms <= 0 || floor <= 0) return 0.0;
+                return 20.0 * Math.log10(rms / floor);
+            };
+
+            const snrX = getSnr(rmsX, baselineNoise.x);
+            const snrY = getSnr(rmsY, baselineNoise.y);
+            const snrZ = getSnr(rmsZ, baselineNoise.z);
+
+            const displaySnr = (elId, val) => {
+                const el = document.getElementById(elId);
+                el.textContent = `${val.toFixed(1)} dB`;
+                // Color badges
+                if (val >= 20.0) {
+                    el.className = "px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded font-mono text-xs font-bold border border-emerald-200";
+                } else if (val >= 6.0) {
+                    el.className = "px-2 py-0.5 bg-amber-50 text-amber-600 rounded font-mono text-xs font-bold border border-amber-200";
+                } else {
+                    el.className = "px-2 py-0.5 bg-rose-50 text-rose-600 rounded font-mono text-xs font-bold border border-rose-200";
+                }
+            };
+
+            displaySnr('snr-val-x', snrX);
+            displaySnr('snr-val-y', snrY);
+            displaySnr('snr-val-z', snrZ);
+        }
+    </script>
+</body>
+</html>

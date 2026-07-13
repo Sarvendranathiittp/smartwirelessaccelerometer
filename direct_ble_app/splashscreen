@@ -1,0 +1,215 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Smart Wireless Accelerometer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "error": "#ba1a1a",
+                            "on-primary-fixed-variant": "#003ea8",
+                            "inverse-surface": "#2d3133",
+                            "border-slate": "#CBD5E1",
+                            "on-background": "#191c1e",
+                            "tertiary-fixed": "#ffdbcd",
+                            "primary": "#004ac6",
+                            "on-tertiary-container": "#ffede6",
+                            "error-container": "#ffdad6",
+                            "on-error-container": "#93000a",
+                            "surface-container": "#eceef0",
+                            "primary-container": "#2563eb",
+                            "secondary-container": "#d5e3fc",
+                            "background": "#f7f9fb",
+                            "surface-container-highest": "#e0e3e5",
+                            "surface": "#f7f9fb",
+                            "primary-fixed-dim": "#b4c5ff",
+                            "outline-variant": "#c3c6d7",
+                            "chart-bg": "#1E293B",
+                            "outline": "#737686",
+                            "inverse-on-surface": "#eff1f3",
+                            "surface-container-low": "#f2f4f6",
+                            "on-primary-container": "#eeefff",
+                            "tertiary-container": "#bc4800",
+                            "surface-dim": "#d8dadc",
+                            "axis-x": "#F97316",
+                            "inverse-primary": "#b4c5ff",
+                            "on-primary": "#ffffff",
+                            "surface-bright": "#f7f9fb",
+                            "surface-tint": "#0053db",
+                            "on-error": "#ffffff",
+                            "secondary": "#515f74",
+                            "on-surface-variant": "#434655",
+                            "danger": "#DC2626",
+                            "on-tertiary-fixed-variant": "#7d2d00",
+                            "on-primary-fixed": "#00174b",
+                            "axis-y": "#22C55E",
+                            "surface-container-lowest": "#ffffff",
+                            "on-surface": "#191c1e",
+                            "tertiary": "#943700",
+                            "surface-container-high": "#e6e8ea",
+                            "surface-white": "#FFFFFF",
+                            "success": "#16A34A",
+                            "secondary-fixed-dim": "#b9c7df",
+                            "on-secondary": "#ffffff",
+                            "secondary-fixed": "#d5e3fc",
+                            "on-tertiary-fixed": "#360f00",
+                            "tertiary-fixed-dim": "#ffb596",
+                            "on-secondary-container": "#57657a",
+                            "surface-variant": "#e0e3e5",
+                            "on-secondary-fixed": "#0d1c2e",
+                            "primary-fixed": "#dbe1ff",
+                            "axis-z": "#3B82F6",
+                            "on-tertiary": "#ffffff",
+                            "on-secondary-fixed-variant": "#3a485b"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "header-height": "64px",
+                            "control-height": "34px",
+                            "base": "4px",
+                            "touch-target": "44px",
+                            "stack-gap": "12px",
+                            "card-padding": "16px 20px",
+                            "gutter": "16px"
+                    },
+                    "fontFamily": {
+                            "headline-md": ["Inter"],
+                            "stepper-input": ["JetBrains Mono"],
+                            "numeric-sm": ["JetBrains Mono"],
+                            "numeric-display": ["JetBrains Mono"],
+                            "body-md": ["Inter"],
+                            "micro-data": ["JetBrains Mono"],
+                            "headline-lg": ["Inter"],
+                            "card-title": ["Inter"],
+                            "button-label": ["Inter"],
+                            "numeric-md": ["JetBrains Mono"],
+                            "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                            "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                            "stepper-input": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                            "numeric-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                            "numeric-display": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                            "body-md": ["14px", {"lineHeight": "21px", "fontWeight": "400"}],
+                            "micro-data": ["10px", {"lineHeight": "12px", "fontWeight": "600"}],
+                            "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                            "card-title": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                            "button-label": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                            "numeric-md": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                            "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .fade-in-up {
+            animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        
+        .pulse-slow {
+            animation: pulseSlow 4s infinite alternate;
+        }
+        @keyframes pulseSlow {
+            from { opacity: 0.8; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+    </style>
+</head>
+<body class="bg-surface-white text-on-surface h-screen w-screen overflow-hidden flex flex-col items-center justify-center relative font-body-md selection:bg-primary-container selection:text-on-primary-container" style="opacity: 0; transition: opacity 0.5s;">
+<!-- Decorative background elements -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center fade-in pulse-slow opacity-10">
+<svg fill="none" height="90%" viewBox="0 0 100 100" width="90%" xmlns="http://www.w3.org/2000/svg" class="opacity-20">
+<circle cx="50" cy="50" r="48" stroke="currentColor" stroke-dasharray="1 4" stroke-width="0.2"></circle>
+<circle cx="50" cy="50" r="35" stroke="currentColor" stroke-dasharray="1 4" stroke-width="0.2"></circle>
+<circle cx="50" cy="50" r="20" stroke="currentColor" stroke-dasharray="1 4" stroke-width="0.2"></circle>
+<circle cx="50" cy="50" r="5" stroke="currentColor" stroke-width="0.5"></circle>
+<path d="M50 0L50 100" stroke="currentColor" stroke-width="0.2"></path>
+<path d="M0 50L100 50" stroke="currentColor" stroke-width="0.2"></path>
+<path d="M45 50L55 50" stroke="currentColor" stroke-width="1"></path>
+<path d="M50 45L50 55" stroke="currentColor" stroke-width="1"></path>
+<path d="M20 50L25 50" stroke="currentColor" stroke-width="0.5"></path>
+<path d="M75 50L80 50" stroke="currentColor" stroke-width="0.5"></path>
+<path d="M50 20L50 25" stroke="currentColor" stroke-width="0.5"></path>
+<path d="M50 75L50 80" stroke="currentColor" stroke-width="0.5"></path>
+</svg>
+</div>
+<div class="z-10 flex flex-col items-center justify-center w-full max-w-4xl px-gutter text-center">
+<!-- Logos -->
+<div class="flex items-center justify-center gap-12 mb-16 fade-in-up">
+<div class="w-32 h-32 md:w-40 md:h-40 flex items-center justify-center p-4 bg-surface-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] border border-border-slate">
+<img alt="SIR Logo" class="max-w-full max-h-full object-contain grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXjEjwYHINbYDoqRucHTIkwM8fxbSPaKE65VUNpFvC-xA04m7rTEzqFjWcf1JmrUvZIsXaJNB3DyipyZG9vyuLvpPCfhZj848GNLZiIGikMwFlSmLsCmZP5Hk7bSGFoiT1TCKhTtt-dGhCW8kN-ZWJEA5pF1B5F2WUzi1Kl-gsMfoXDf38v0qMQ2guBdbvQk4Rlf9jdj7lVYXOOAfPL06UG4iAFfEHg4H6kcNfu5JfS_NOHciQlfvUHLsQj01a2vhPP7e7OOUBMA">
+</div>
+<div class="w-px h-16 bg-outline-variant hidden md:block"></div>
+<div class="w-32 h-32 md:w-40 md:h-40 flex items-center justify-center p-4 bg-surface-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] border border-border-slate">
+<img alt="IIT Tirupati Logo" class="max-w-full max-h-full object-contain grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDozosxSEHN_MJ7SPlwss4aKk8w58kVBycZQ4Q7iLG69zyrVImndu-uZ_59A7s0REwEVjai6JBjkOqTluK8fFHCizPSoN-BhEQPYpvpfY3x5RDAIggsxcoV_DnDFJZGwZ3ev4oHKTJ6Ar1GZCbrGFboBVm_7G6G4Ch7jvNDGfzgrImPYeKcB4wgj9S_e2EQseMipyN79W3RbYwAe7J8Voke1D0E29PjPYeI0HKMo4fGhLFDplTCFzv9tWpZjdho7pXnM6Whh-NTkQ">
+</div>
+</div>
+<!-- Typography -->
+<div class="flex flex-col items-center space-y-4 mb-12">
+<h2 class="font-label-caps text-label-caps text-secondary tracking-widest uppercase fade-in-up delay-100">ISRO Collaboration Project</h2>
+<h1 class="font-headline-lg text-headline-lg md:text-4xl lg:text-5xl font-bold text-on-surface tracking-tight fade-in-up delay-200">
+                Smart Wireless<br>Accelerometer
+            </h1>
+<p class="font-body-md text-body-md text-secondary max-w-md mt-4 fade-in-up delay-300">
+                Precision laboratory-grade data acquisition system for high-fidelity mechanical analysis.
+            </p>
+</div>
+<!-- Initializing Indicator -->
+<div class="mt-8 flex flex-col items-center fade-in-up delay-400">
+<div class="flex space-x-2 mb-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-ping" style="animation-duration: 1.5s;"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-axis-y animate-ping" style="animation-duration: 1.5s; animation-delay: 0.2s;"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-axis-x animate-ping" style="animation-duration: 1.5s; animation-delay: 0.4s;"></div>
+</div>
+<span class="font-micro-data text-micro-data text-outline uppercase tracking-wider">System Initializing v1.0.4-BETA</span>
+</div>
+</div>
+<!-- Bottom subtle branding -->
+<div class="absolute bottom-safe pb-8 fade-in delay-400">
+<span class="font-micro-data text-micro-data text-surface-variant">SECURE CONNECTION PROTOCOL ENGAGED</span>
+</div>
+<script>
+        // Simulate loading and redirect
+        setTimeout(() => {
+            // In a real app, this would route to the dashboard
+            console.log("Initialization complete. Ready for data acquisition.");
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+        }, 3500);
+    </script>
+
+
+</body></html>

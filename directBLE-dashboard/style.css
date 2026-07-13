@@ -1,0 +1,467 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
+
+body {
+    font-family: 'Geist', sans-serif !important;
+}
+
+.font-mono,
+.font-mono-digits,
+input,
+select,
+table,
+.timeline-entry,
+#frequencyResolution,
+#windowDisplay,
+#acqBatteryLabel,
+#acqRateLabel,
+#footerSampleRate,
+#footerPacketLoss,
+#footerLatency {
+    font-family: 'Geist Mono', monospace !important;
+}
+
+/* Custom premium scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3) !important;
+    border-radius: 10px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5) !important;
+}
+
+/* Workspace Routing */
+.workspace {
+    display: none !important;
+}
+.workspace.active {
+    display: flex !important;
+}
+
+/* Sidebar Navigation Buttons Styles */
+.side-tab-btn {
+    position: relative;
+    color: #64748b !important;
+    background: transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 4px solid transparent;
+    width: 88%;
+    margin: 2px auto;
+    padding: 14px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 12px;
+}
+.side-tab-btn:hover {
+    color: #0f172a !important;
+    background-color: rgba(148, 163, 184, 0.12) !important;
+}
+.side-tab-btn.active-tab {
+    color: #00A3E0 !important;
+    background-color: rgba(0, 163, 224, 0.08) !important;
+    border-left-color: #00A3E0 !important;
+    font-weight: 600;
+}
+
+/* Eco Mode Toggle Switch */
+.eco-toggle.eco-active {
+    background-color: #10b981;
+}
+.eco-toggle.eco-active .eco-toggle-knob {
+    transform: translateX(1.25rem);
+}
+
+/* TX Power Radio Card */
+.tx-power-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.tx-power-card.active {
+    border-color: #00A3E0 !important;
+    background-color: rgba(0, 163, 224, 0.05) !important;
+}
+.tx-power-card .power-bar {
+    transition: width 0.3s ease;
+}
+
+/* Battery pulse animation for low battery */
+@keyframes battery-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+.battery-pulse {
+    animation: battery-pulse 1.5s ease-in-out infinite;
+}
+
+/* Active State for Header/Tab Navigation */
+.nav-link-active {
+    color: #00A3E0 !important;
+    font-weight: 600;
+    border-bottom: 2px solid #00A3E0;
+}
+
+/* DAQ Status Color Badges */
+.daq-status-val {
+    font-family: 'Geist Mono', monospace;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+.status-connected {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-disconnected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-ready {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Axis Pills active styles */
+.axis-pill.active {
+    color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#toggleX.active {
+    background-color: #ff4d6d !important;
+}
+
+#toggleY.active {
+    background-color: #10b981 !important;
+}
+
+#toggleZ.active {
+    background-color: #6366f1 !important;
+}
+
+/* Modal and Backdrop overlays */
+.calibration-overlay {
+    backdrop-filter: blur(4px);
+    transition: all 0.25s ease-out;
+}
+
+/* Pulse animation for active telemetry badge indicator */
+@keyframes pulse-green {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+        background-color: #10b981;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+        background-color: #34d399;
+    }
+}
+
+.indicator-pulse-active {
+    animation: pulse-green 1.6s infinite ease-in-out;
+}
+
+/* Toast Notifications - Premium Style */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+    width: 100%;
+    pointer-events: none;
+}
+
+.toast-notification {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    pointer-events: auto;
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast-notification.success {
+    border-left: 4px solid #10b981;
+}
+
+.toast-notification.error {
+    border-left: 4px solid #ef4444;
+}
+
+.toast-notification.warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.toast-notification.info {
+    border-left: 4px solid #3b82f6;
+}
+
+.toast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.toast-icon {
+    margin-right: 6px;
+    font-weight: 700;
+}
+
+.toast-body {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.toast-close-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px;
+}
+
+.toast-close-btn:hover {
+    color: #475569;
+}
+
+/* Device Discovery Cards */
+.device-discovery-card {
+    display: flex;
+    justify-content: justify;
+    align-items: center;
+    padding: 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+}
+
+.device-discovery-card:hover {
+    border-color: #3b82f6;
+    background-color: #f8fafc;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.device-discovery-card .card-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.device-discovery-card .card-icon-box {
+    font-size: 20px;
+    background: #eff6ff;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.device-discovery-card .card-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.device-discovery-card .card-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.device-discovery-card .card-status-row {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.device-discovery-card .card-chevron {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+/* Badge statuses */
+.badge-status-green {
+    background-color: #d1fae5;
+    color: #065f46;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.badge-status-red {
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* ===== Instrument Manager — Connection Screen Styles ===== */
+
+/* Instrument Pane card container */
+.instrument-pane {
+    border-radius: 12px;
+    border: 1px solid var(--outline-variant, #c4c6d0);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.instrument-pane:hover {
+    border-color: var(--primary, #00A3E0);
+    box-shadow: 0 4px 12px -2px rgba(0, 163, 224, 0.08);
+}
+
+/* Hide scrollbar but keep scrolling */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Status pulse animation for topology dots */
+@keyframes status-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+    }
+}
+.status-pulse {
+    animation: status-pulse 2s infinite ease-in-out;
+}
+
+/* Timeline log entry */
+.timeline-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 11px;
+    line-height: 1.5;
+    font-family: 'Geist Mono', monospace;
+}
+.timeline-entry .ts {
+    color: #94a3b8;
+    white-space: nowrap;
+    min-width: 65px;
+}
+.timeline-entry.type-scan .msg { color: #3b82f6; }
+.timeline-entry.type-info .msg { color: #f59e0b; }
+.timeline-entry.type-succ .msg { color: #10b981; }
+.timeline-entry.type-warn .msg { color: #ef4444; }
+.timeline-entry.type-default .msg { color: #64748b; }
+
+/* ===== iOS-style Glassmorphism Cards ===== */
+.glass-card {
+    background: rgba(255, 255, 255, 0.65) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04), 
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.3) !important;
+    border-radius: 16px !important;
+}
+
+.glass-card-interactive {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.glass-card-interactive:hover {
+    background: rgba(255, 255, 255, 0.75) !important;
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.08),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-2px);
+}
+
+/* Collapsed Drawer state reset to prevent ghost border/margins */
+#controlDrawer.w-0 {
+    width: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    opacity: 0 !important;
+}
+
+/* Ensure overlays sit above all screen views (which have z-index: 50) */
+#calibrationOverlay,
+#sixPosCalOverlay,
+#validationOverlay,
+#configChangeOverlay,
+#certOverlay,
+#exportOptionsOverlay {
+    z-index: 99 !important;
+}
+
+/* Fullscreen Mode for Time Chart Card */
+.fullscreen-chart-card {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Adjust viewport padding and height when fullscreen */
+.fullscreen-chart-card #timeChartViewport {
+    height: calc(100vh - 48px) !important;
+    min-height: 0 !important;
+    flex: 1 !important;
+}
+
+/* Ensure responsive Chart.js canvases scale accurately without holding cached inline sizes */
+#timeChartViewport canvas,
+#frequencyChartViewport canvas {
+    width: 100% !important;
+    height: 100% !important;
+}

@@ -1,0 +1,31 @@
+/* empty_app_core Power-Optimized Overlay to Enable DCDC */
+#include <zephyr/dt-bindings/regulator/nrf5x.h>
+
+&vregmain {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&vregradio {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&vregh {
+    status = "okay";
+};
+
+/* Disable all peripherals Zephyr might try to initialize on the app core.
+ * Without explicit disabling, Zephyr boot may enable clocks/power for these
+ * peripherals even if no driver uses them, wasting ~10-50 µA each. */
+&uart0  { status = "disabled"; };
+&uart1  { status = "disabled"; };
+&i2c1   { status = "disabled"; };
+&i2c2   { status = "disabled"; };
+&spi2   { status = "disabled"; };
+&spi3   { status = "disabled"; };
+&qspi   { status = "disabled"; };
+&adc    { status = "disabled"; };
+&pwm0   { status = "disabled"; };
+&pwm1   { status = "disabled"; };
+&pwm2   { status = "disabled"; };
+&pwm3   { status = "disabled"; };
+&usbd   { status = "disabled"; };

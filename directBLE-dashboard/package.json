@@ -1,0 +1,53 @@
+{
+  "name": "smart-wireless-acceleromater",
+  "version": "1.0.0",
+  "description": "ISRO Smart Wireless Accelerometer Dashboard",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "ISRO / IITT",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "in.gov.isro.smart.wireless.acceleromater",
+    "productName": "Smart Wireless Acceleromater",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index1.html",
+      "javascript.js",
+      "style.css",
+      "sirlogo.png",
+      "tirupatilogo.png",
+      "logo1.jpg",
+      "app_icon.png",
+      "SMA_lab_logo.png",
+      "IIT_tirupati_logo.png",
+      "ISRO_logo.png",
+      "node_modules/chart.js/dist/chart.umd.js"
+    ],
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Science",
+      "icon": "app_icon.png"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "app_icon.png"
+    }
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1"
+  }
+}

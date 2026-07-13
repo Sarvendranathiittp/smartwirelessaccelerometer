@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ISRO SMAL - Live View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "inverse-surface": "#2d3133",
+                    "border-slate": "#CBD5E1",
+                    "on-background": "#191c1e",
+                    "tertiary-fixed": "#ffdbcd",
+                    "primary": "#004ac6",
+                    "on-tertiary-container": "#ffede6",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eceef0",
+                    "primary-container": "#2563eb",
+                    "secondary-container": "#d5e3fc",
+                    "background": "#f7f9fb",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface": "#f7f9fb",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "outline-variant": "#c3c6d7",
+                    "chart-bg": "#1E293B",
+                    "outline": "#737686",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-low": "#f2f4f6",
+                    "on-primary-container": "#eeefff",
+                    "tertiary-container": "#bc4800",
+                    "surface-dim": "#d8dadc",
+                    "axis-x": "#F97316",
+                    "inverse-primary": "#b4c5ff",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "surface-tint": "#0053db",
+                    "on-error": "#ffffff",
+                    "secondary": "#515f74",
+                    "on-surface-variant": "#434655",
+                    "danger": "#DC2626",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-primary-fixed": "#00174b",
+                    "axis-y": "#22C55E",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#191c1e",
+                    "tertiary": "#943700",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-white": "#FFFFFF",
+                    "success": "#16A34A",
+                    "secondary-fixed-dim": "#b9c7df",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#d5e3fc",
+                    "on-tertiary-fixed": "#360f00",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "on-secondary-container": "#57657a",
+                    "surface-variant": "#e0e3e5",
+                    "on-secondary-fixed": "#0d1c2e",
+                    "primary-fixed": "#dbe1ff",
+                    "axis-z": "#3B82F6",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#3a485b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "header-height": "64px",
+                    "control-height": "34px",
+                    "base": "4px",
+                    "touch-target": "44px",
+                    "stack-gap": "12px",
+                    "card-padding": "16px 20px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "stepper-input": ["JetBrains Mono"],
+                    "numeric-sm": ["JetBrains Mono"],
+                    "numeric-display": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "micro-data": ["JetBrains Mono"],
+                    "headline-lg": ["Inter"],
+                    "card-title": ["Inter"],
+                    "button-label": ["Inter"],
+                    "numeric-md": ["JetBrains Mono"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "stepper-input": ["12px", {"lineHeight": "16px", "fontWeight": "700"}],
+                    "numeric-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "numeric-display": ["24px", {"lineHeight": "32px", "fontWeight": "800"}],
+                    "body-md": ["14px", {"lineHeight": "21px", "fontWeight": "400"}],
+                    "micro-data": ["10px", {"lineHeight": "12px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "card-title": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "button-label": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "numeric-md": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .chassis-bg { background-color: #f8fafc; } /* Slate 50 approx */
+        .inset-beveled {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,1);
+        }
+        .graph-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+        }
+        /* Custom scrollbar for control panel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .transition-width {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen overflow-hidden flex flex-col font-body-md antialiased chassis-bg">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-header-height bg-surface-white shadow-md border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:bg-primary-container hover:text-on-primary-container p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">ISRO SMAL</h1>
+</div>
+<!-- Desktop Nav Cluster -->
+<nav class="hidden md:flex items-center gap-1 bg-surface-container rounded-full p-1 border border-outline-variant">
+<a class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-bold transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">insights</span>
+<span class="font-button-label text-button-label">Live View</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-1.5 rounded-full text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+<span class="font-button-label text-button-label">Spectrum</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-1.5 rounded-full text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">query_stats</span>
+<span class="font-button-label text-button-label">SNR Lab</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-1.5 rounded-full text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-button-label text-button-label">Settings</span>
+</a>
+</nav>
+<button class="font-button-label text-button-label text-primary font-bold hover:bg-primary-container hover:text-on-primary-container px-4 py-2 rounded-lg transition-colors border border-primary">
+            CONNECT
+        </button>
+</header>
+<!-- Main Chassis Area -->
+<main class="flex-1 mt-[64px] flex relative overflow-hidden mb-safe md:mb-0">
+<!-- Collapsible Control Panel (Left Sidebar) -->
+<aside class="w-80 h-full bg-surface-bright border-r border-outline-variant flex flex-col transition-width relative z-20 flex-shrink-0" id="control-panel">
+<!-- Collapse Toggle Button (Attached to sidebar) -->
+<button class="absolute -right-3 top-4 w-6 h-12 bg-surface-white border border-outline-variant rounded-r-lg shadow-sm flex items-center justify-center hover:bg-surface-container-low z-30" id="toggle-sidebar" title="Toggle Control Panel">
+<span class="material-symbols-outlined text-[16px] text-secondary transition-transform duration-300" id="toggle-icon">chevron_left</span>
+</button>
+<div class="flex-1 overflow-y-auto p-4 space-y-6">
+<!-- Acquisition Controls -->
+<section>
+<h2 class="font-card-title text-card-title text-secondary mb-3 uppercase tracking-wider text-xs">Acquisition</h2>
+<div class="grid grid-cols-2 gap-2">
+<button class="col-span-2 bg-primary text-on-primary h-touch-target rounded-lg font-button-label text-button-label font-bold flex items-center justify-center gap-2 hover:bg-surface-tint inset-beveled transition-colors">
+<span class="material-symbols-outlined">play_arrow</span>
+                            START READING
+                        </button>
+<button class="bg-surface-white border border-border-slate text-on-surface h-touch-target rounded-lg font-button-label text-button-label flex items-center justify-center gap-2 hover:bg-surface-container-low inset-beveled transition-colors">
+<span class="material-symbols-outlined text-danger">stop</span>
+                            STOP
+                        </button>
+<button class="bg-surface-white border border-border-slate text-on-surface h-touch-target rounded-lg font-button-label text-button-label flex items-center justify-center gap-2 hover:bg-surface-container-low inset-beveled transition-colors">
+<span class="material-symbols-outlined">pause</span>
+                            PAUSE
+                        </button>
+</div>
+</section>
+<!-- Calibration Settings -->
+<section>
+<div class="flex justify-between items-center mb-3">
+<h2 class="font-card-title text-card-title text-secondary uppercase tracking-wider text-xs">Offset Calibration</h2>
+<button class="text-primary hover:bg-primary-container p-1 rounded transition-colors">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+</button>
+</div>
+<div class="space-y-3 bg-surface-container-low p-3 rounded-lg border border-border-slate inset-beveled">
+<!-- X Axis Offset -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-axis-x"></span>
+<span class="font-micro-data text-micro-data text-on-surface-variant">X-AXIS (mg)</span>
+</div>
+<div class="flex items-center border border-border-slate rounded bg-surface-white">
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container text-secondary border-r border-border-slate"><span class="material-symbols-outlined text-[16px]">remove</span></button>
+<input class="w-16 h-8 text-center font-stepper-input text-stepper-input bg-transparent border-none focus:ring-0 p-0 text-on-surface" readonly="" type="text" value="+0.024"/>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container text-secondary border-l border-border-slate"><span class="material-symbols-outlined text-[16px]">add</span></button>
+</div>
+</div>
+<!-- Y Axis Offset -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-axis-y"></span>
+<span class="font-micro-data text-micro-data text-on-surface-variant">Y-AXIS (mg)</span>
+</div>
+<div class="flex items-center border border-border-slate rounded bg-surface-white">
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container text-secondary border-r border-border-slate"><span class="material-symbols-outlined text-[16px]">remove</span></button>
+<input class="w-16 h-8 text-center font-stepper-input text-stepper-input bg-transparent border-none focus:ring-0 p-0 text-on-surface" readonly="" type="text" value="-0.011"/>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container text-secondary border-l border-border-slate"><span class="material-symbols-outlined text-[16px]">add</span></button>
+</div>
+</div>
+<!-- Z Axis Offset -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-axis-z"></span>
+<span class="font-micro-data text-micro-data text-on-surface-variant">Z-AXIS (mg)</span>
+</div>
+<div class="flex items-center border border-border-slate rounded bg-surface-white">
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container text-secondary border-r border-border-slate"><span class="material-symbols-outlined text-[16px]">remove</span></button>
+<input class="w-16 h-8 text-center font-stepper-input text-stepper-input bg-transparent border-none focus:ring-0 p-0 text-on-surface" readonly="" type="text" value="+0.985"/>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container text-secondary border-l border-border-slate"><span class="material-symbols-outlined text-[16px]">add</span></button>
+</div>
+</div>
+</div>
+</section>
+<!-- Timed Run Settings -->
+<section>
+<h2 class="font-card-title text-card-title text-secondary mb-3 uppercase tracking-wider text-xs">Run Config</h2>
+<div class="bg-surface-white p-3 rounded-lg border border-border-slate inset-beveled space-y-4">
+<div class="flex justify-between items-center">
+<span class="font-button-label text-button-label text-on-surface">Timed Run</span>
+<!-- Capsule Toggle -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-slate after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div>
+<label class="block font-micro-data text-micro-data text-on-surface-variant mb-1">DURATION (MINUTES)</label>
+<input class="w-full h-control-height border border-border-slate rounded px-3 font-stepper-input text-stepper-input text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow" type="number" value="15"/>
+</div>
+<div>
+<label class="block font-micro-data text-micro-data text-on-surface-variant mb-1">SAMPLING RATE (Hz)</label>
+<select class="w-full h-control-height border border-border-slate rounded px-3 font-stepper-input text-stepper-input text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none appearance-none bg-surface-white">
+<option>100</option>
+<option selected="">500</option>
+<option>1000</option>
+<option>2000</option>
+</select>
+</div>
+</div>
+</section>
+</div>
+</aside>
+<!-- Main Graph Canvas -->
+<section class="flex-1 p-gutter flex flex-col h-full bg-surface-container-lowest min-w-0 z-10">
+<!-- Canvas Header -->
+<div class="flex justify-between items-end mb-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Time Domain</h2>
+<p class="font-body-md text-body-md text-secondary">Real-time acceleration data (mg) vs Time (s)</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-white border border-border-slate p-2 rounded hover:bg-surface-container-low transition-colors inset-beveled" title="Export Data">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">download</span>
+</button>
+<button class="bg-surface-white border border-border-slate p-2 rounded hover:bg-surface-container-low transition-colors inset-beveled" title="Graph Settings">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">tune</span>
+</button>
+</div>
+</div>
+<!-- Graph Area -->
+<div class="flex-1 bg-chart-bg rounded-lg border border-border-slate inset-beveled relative overflow-hidden flex flex-col">
+<!-- Legend Overlay -->
+<div class="absolute top-4 right-4 flex gap-4 bg-inverse-surface/80 backdrop-blur-sm border border-outline/30 px-3 py-1.5 rounded shadow-sm z-10">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 bg-axis-x"></span>
+<span class="font-micro-data text-micro-data text-inverse-on-surface">X</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 bg-axis-y"></span>
+<span class="font-micro-data text-micro-data text-inverse-on-surface">Y</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 bg-axis-z"></span>
+<span class="font-micro-data text-micro-data text-inverse-on-surface">Z</span>
+</div>
+</div>
+<!-- Simulated Graph Grid & Lines -->
+<div class="flex-1 relative graph-grid">
+<!-- Y Axis Labels -->
+<div class="absolute left-2 top-0 bottom-0 flex flex-col justify-between py-4 text-outline font-micro-data text-micro-data">
+<span>+2000</span>
+<span>+1000</span>
+<span>0</span>
+<span>-1000</span>
+<span>-2000</span>
+</div>
+<!-- X Axis Labels -->
+<div class="absolute bottom-2 left-10 right-4 flex justify-between text-outline font-micro-data text-micro-data">
+<span>-10s</span>
+<span>-8s</span>
+<span>-6s</span>
+<span>-4s</span>
+<span>-2s</span>
+<span>0s</span>
+</div>
+<!-- Simulated Data Traces (SVG) -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 400">
+<!-- Zero Line -->
+<line stroke="#334155" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="1000" y1="200" y2="200"></line>
+<!-- X Trace (Orange) -->
+<path class="opacity-80" d="M0 210 Q 50 190, 100 220 T 200 180 T 300 230 T 400 195 T 500 215 T 600 185 T 700 240 T 800 170 T 900 210 T 1000 190" fill="none" stroke="#F97316" stroke-width="2"></path>
+<!-- Y Trace (Green) -->
+<path class="opacity-80" d="M0 190 Q 60 210, 120 180 T 240 220 T 360 170 T 480 230 T 600 190 T 720 210 T 840 180 T 960 220 T 1000 200" fill="none" stroke="#22C55E" stroke-width="2"></path>
+<!-- Z Trace (Blue - hovering near 1g) -->
+<path class="opacity-80" d="M0 50 Q 80 45, 160 55 T 320 48 T 480 52 T 640 47 T 800 53 T 960 49 T 1000 50" fill="none" stroke="#3B82F6" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Live Readout Panel (Bottom of Graph) -->
+<div class="bg-surface-white border-t border-border-slate p-3 flex justify-around items-center">
+<div class="flex flex-col items-center">
+<span class="font-micro-data text-micro-data text-on-surface-variant">INSTANTANEOUS X</span>
+<span class="font-numeric-md text-numeric-md text-axis-x">+0.012 <span class="text-sm font-normal text-secondary">mg</span></span>
+</div>
+<div class="w-px h-8 bg-border-slate"></div>
+<div class="flex flex-col items-center">
+<span class="font-micro-data text-micro-data text-on-surface-variant">INSTANTANEOUS Y</span>
+<span class="font-numeric-md text-numeric-md text-axis-y">-0.004 <span class="text-sm font-normal text-secondary">mg</span></span>
+</div>
+<div class="w-px h-8 bg-border-slate"></div>
+<div class="flex flex-col items-center">
+<span class="font-micro-data text-micro-data text-on-surface-variant">INSTANTANEOUS Z</span>
+<span class="font-numeric-md text-numeric-md text-axis-z">+0.988 <span class="text-sm font-normal text-secondary">g</span></span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-[80px] pb-safe bg-surface-container border-t border-outline-variant shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-transform tap-highlight" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="font-label-caps text-label-caps mt-1">Live View</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps mt-1">Spectrum</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-caps text-label-caps mt-1">SNR Lab</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-secondary-container hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps mt-1">Settings</span>
+</a>
+</nav>
+<script>
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('control-panel');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        const toggleIcon = document.getElementById('toggle-icon');
+        let isExpanded = true;
+
+        toggleBtn.addEventListener('click', () => {
+            isExpanded = !isExpanded;
+            if (isExpanded) {
+                sidebar.style.width = '20rem'; // w-80
+                sidebar.classList.remove('w-0');
+                toggleIcon.style.transform = 'rotate(0deg)';
+                // Re-enable content visibility if hidden
+                Array.from(sidebar.children).forEach(child => {
+                    if(child.id !== 'toggle-sidebar') child.style.opacity = '1';
+                });
+            } else {
+                sidebar.style.width = '0px';
+                toggleIcon.style.transform = 'rotate(180deg)';
+                // Hide content to prevent overflow issues during transition
+                Array.from(sidebar.children).forEach(child => {
+                    if(child.id !== 'toggle-sidebar') child.style.opacity = '0';
+                });
+            }
+        });
+    </script>
+</body></html>

@@ -1,0 +1,10 @@
+/* Enable highly efficient DCDC regulators for the Network Core */
+#include <zephyr/dt-bindings/regulator/nrf5x.h>
+
+&vregmain {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&vregradio {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
