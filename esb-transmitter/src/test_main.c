@@ -16,13 +16,13 @@ int main(void)
         pm_device_action_run(spi_dev, PM_DEVICE_ACTION_SUSPEND);
     }
 
-    /* Set all SPI pins to disconnected/high-z to prevent sensor leakage */
+    /* Configure SPI pins to default state */
     nrf_gpio_cfg_default(47); // P1.15 (SCK)
     nrf_gpio_cfg_default(46); // P1.14 (MOSI)
     nrf_gpio_cfg_default(45); // P1.13 (MISO)
     nrf_gpio_cfg_default(44); // P1.12 (CS)
 
-    LOG_INF("Sleeping forever. Current should be < 5 uA.");
+    LOG_INF("Sleeping forever.");
     
     while(1) {
         k_sleep(K_FOREVER);

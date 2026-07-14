@@ -6,13 +6,6 @@
  *
  * Sensor: ST H3LIS331DL (3-axis, up to ±400g, SPI @ 1 MHz)
  * Timer:  NRF_RTC2 hardware ISR at exactly 1024.0 Hz (LFCLK-driven)
- *
- * Low power design:
- *   - H3LIS331DL in power-down when idle (~1 µA)
- *   - H3LIS331DL in normal mode at 1000 Hz during streaming (~300 µA)
- *   - NRF_RTC2 runs on LFCLK (32.768 kHz) — HFCLK stays off between SPI reads
- *   - SPI PM_DEVICE_RUNTIME auto-suspends the SPIM3 peripheral between reads
- *   - Dynamic BLE connection intervals (fast when streaming, slow when idle)
  */
 
 #include <zephyr/kernel.h>
@@ -127,8 +120,8 @@ static volatile bool     streaming_active = false;
 /*============================================================================
  * Dual Sample Timer — RTC0 (1024 Hz) or TIMER1 (2-5 kHz)
  *
- * RTC0:   32.768 kHz LFCLK, CC[0]=32 → 1024 Hz exactly. Ultra-low-power.
- * TIMER1: 16 MHz HFCLK, CC[0]=16M/rate → 2000-5000 Hz. Higher power.
+ * RTC0:   32.768 kHz LFCLK, CC[0]=32 → 1024 Hz exactly.
+ * TIMER1: 16 MHz HFCLK, CC[0]=16M/rate → 2000-5000 Hz.
  *
  * The active timer is selected by accel_service_use_hf_timer().
  *===========================================================================*/
@@ -780,7 +773,7 @@ static void connected(struct bt_conn *conn, uint8_t err) {
     LOG_INF("Connected");
     active_conn = bt_conn_ref(conn);
     accel_service_set_conn(conn);
-    /* Start with a low-power, slow connection interval when idle (100-125 ms, slave latency 4) */
+    /* Start with a slow connection interval when idle (100-125 ms, slave latency 4) */
     struct bt_le_conn_param *param = BT_LE_CONN_PARAM(80, 100, 4, 400);
     bt_conn_le_param_update(conn, param);
   }
@@ -789,7 +782,7 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
   LOG_INF("Disconnected: %u", reason);
   
-  /* Gracefully stop streaming if it was active to save power and reset state */
+  /* Gracefully stop streaming if it was active and reset state */
   accel_service_on_notify_disabled();
 
   if (active_conn) {
@@ -864,7 +857,7 @@ void accel_service_on_notify_disabled(void) {
   h3lis331dl_sleep();
   adxl345_sleep();
 
-  /* Switch back to slow, low-power connection parameters when idle */
+  /* Switch back to slow connection parameters when idle */
   if (active_conn) {
     struct bt_le_conn_param *slow = BT_LE_CONN_PARAM(80, 100, 4, 400);
     bt_conn_le_param_update(active_conn, slow);

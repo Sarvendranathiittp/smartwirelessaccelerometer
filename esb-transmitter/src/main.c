@@ -6,16 +6,14 @@
  * ESB Wireless Vibration Telemetry — Network Core (PTX)
  * ISRO RESPOND Programme / IIT Tirupati Smart Mechatronics Lab
  *
- * Power budget target: ≤ 500 µA average at VDD=3.0V (CR2032 compatible)
- *
  * Architecture:
  *   - RTC0 (LFCLK, 32 ticks = 976 µs) fires at exact 1024 Hz
  *   - H3LIS331DL read via bare-register SPIM gate (ENABLE=7→0 per sample)
  *   - HFCLK (HFINT) active only during ~12 µs SPI transfer per sample
  *   - ESB TX fires every 40 samples (~25.6 Hz); HFXO started 1 ms early
  *   - HFXO stopped immediately in TX event handler
- *   - CPU in deep sleep (SCB SLEEPDEEP=1) for remainder of each 976 µs window
- *   - App core in permanent deep sleep (<3 µA) via custom empty_app_core
+ *   - CPU stays in sleep mode for remainder of each 976 µs window
+ *   - App core is kept in sleep mode via custom empty_app_core
  */
 
 #include <zephyr/drivers/clock_control.h>
@@ -301,10 +299,10 @@ int main(void)
     /* ── 6. Start 1024 Hz RTC0 timer ─────────────────────────────────────*/
     start_sample_timer();
 
-    /* ── 7. Power optimization setup ─────────────────────────────────────*/
+    /* ── 7. Setup system registers ─────────────────────────────────────*/
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 
-    /* GPIOTE LowPower latency */
+    /* GPIOTE latency config */
     NRF_GPIOTE_NS->LATENCY = GPIOTE_LATENCY_LATENCY_LowPower;
 
     /* Disable all GPIOTE channel interrupts */

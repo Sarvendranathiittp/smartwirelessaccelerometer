@@ -127,7 +127,7 @@ typedef struct __attribute__((packed)) {
 #define ACCEL_PACKET_SIZE sizeof(accel_packet_t) /* 239 */
 
 /*============================================================================
- * Ring Buffer Configuration (Coin-Cell Optimized)
+ * Ring Buffer Configuration
  *
  * 256 samples = 256ms @ 1kHz
  * 8 packets per burst (232 samples = 8 × 29)

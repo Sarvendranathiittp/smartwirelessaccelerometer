@@ -48,7 +48,7 @@ static const struct bt_gatt_attr *accel_data_attr = NULL;
 static const struct bt_gatt_attr *timestamp_attr = NULL;
 static const struct bt_gatt_attr *battery_attr = NULL;
 
-/* External power detection stub - TODO: implement ADC check */
+/* External voltage detection stub - TODO: implement ADC check */
 static bool external_power_detected = false;
 
 /* TX Power state (default matches the static config of -8 dBm) */
